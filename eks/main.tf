@@ -1,6 +1,6 @@
-resource "aws_eks_cluster" "EKSlabs" {
+resource "aws_eks_cluster" "EKSLab" {
   name     = var.cluster_name
-  role_arn = aws_iam_role.EKSlabs.arn
+  role_arn = aws_iam_role.EKSLab.arn
 
   vpc_config {
     subnet_ids              = var.aws_public_subnet
@@ -11,15 +11,15 @@ resource "aws_eks_cluster" "EKSlabs" {
   }
 
   depends_on = [
-    aws_iam_role_policy_attachment.EKSlabs-AmazonEKSClusterPolicy,
-    aws_iam_role_policy_attachment.EKSlabs-AmazonEKSVPCResourceController,
+    aws_iam_role_policy_attachment.EKSLab-AmazonEKSClusterPolicy,
+    aws_iam_role_policy_attachment.EKSLab-AmazonEKSVPCResourceController,
   ]
 }
 
-resource "aws_eks_node_group" "EKSlabslabs" {
-  cluster_name    = aws_eks_cluster.EKSlabs.name
+resource "aws_eks_node_group" "EKSLab" {
+  cluster_name    = aws_eks_cluster.EKSLab.name
   node_group_name = var.node_group_name
-  node_role_arn   = aws_iam_role.EKSlabs.arn
+  node_role_arn   = aws_iam_role.EKSLab2.arn
   subnet_ids      = var.aws_public_subnet
   instance_types  = var.instance_types
 
@@ -35,9 +35,9 @@ resource "aws_eks_node_group" "EKSlabslabs" {
   }
 
   depends_on = [
-    aws_iam_role_policy_attachment.EKSlabs-AmazonEKSWorkerNodePolicy,
-    aws_iam_role_policy_attachment.EKSlabs-AmazonEKS_CNI_Policy,
-    aws_iam_role_policy_attachment.EKSlabs-AmazonEC2ContainerRegistryReadOnly,
+    aws_iam_role_policy_attachment.EKSLab-AmazonEKSWorkerNodePolicy,
+    aws_iam_role_policy_attachment.EKSLab-AmazonEKS_CNI_Policy,
+    aws_iam_role_policy_attachment.EKSLab-AmazonEC2ContainerRegistryReadOnly,
   ]
 }
 
@@ -60,8 +60,8 @@ resource "aws_security_group" "node_group_one" {
   }
 }
 
-resource "aws_iam_role" "EKSlabs" {
-  name = "eks-cluster-EKSlabs"
+resource "aws_iam_role" "EKSLab" {
+  name = "eks-cluster-EKSLab"
 
   assume_role_policy = <<POLICY
 {
@@ -79,20 +79,20 @@ resource "aws_iam_role" "EKSlabs" {
 POLICY
 }
 
-resource "aws_iam_role_policy_attachment" "EKSlabs-AmazonEKSClusterPolicy" {
+resource "aws_iam_role_policy_attachment" "EKSLab-AmazonEKSClusterPolicy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
-  role       = aws_iam_role.EKSlabs.name
+  role       = aws_iam_role.EKSLab.name
 }
 
 # Optionally, enable Security Groups for Pods
 # Reference: https://docs.aws.amazon.com/eks/latest/userguide/security-groups-for-pods.html
-resource "aws_iam_role_policy_attachment" "cloudquicklabs-AmazonEKSVPCResourceController" {
+resource "aws_iam_role_policy_attachment" "EKSLab-AmazonEKSVPCResourceController" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSVPCResourceController"
-  role       = aws_iam_role.EKSlabs.name
+  role       = aws_iam_role.EKSLab.name
 }
 
-resource "aws_iam_role" "EKSlabs" {
-  name = "eks-node-group-EKSlabs"
+resource "aws_iam_role" "EKSLab2" {
+  name = "eks-node-group-EKSLab"
 
   assume_role_policy = jsonencode({
     Statement = [{
@@ -102,21 +102,21 @@ resource "aws_iam_role" "EKSlabs" {
         Service = "ec2.amazonaws.com"
       }
     }]
-    Version = "2023-10-17"
+    Version = "2012-10-17"
   })
 }
 
-resource "aws_iam_role_policy_attachment" "EKSlabs-AmazonEKSWorkerNodePolicy" {
+resource "aws_iam_role_policy_attachment" "EKSLab-AmazonEKSWorkerNodePolicy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
-  role       = aws_iam_role.EKSlabs.name
+  role       = aws_iam_role.EKSLab2.name
 }
 
-resource "aws_iam_role_policy_attachment" "EKSlabs-AmazonEKS_CNI_Policy" {
+resource "aws_iam_role_policy_attachment" "EKSLab-AmazonEKS_CNI_Policy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
-  role       = aws_iam_role.EKSlabs.name
+  role       = aws_iam_role.EKSLab2.name
 }
 
-resource "aws_iam_role_policy_attachment" "EKSlabs-AmazonEC2ContainerRegistryReadOnly" {
+resource "aws_iam_role_policy_attachment" "EKSLab-AmazonEC2ContainerRegistryReadOnly" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
-  role       = aws_iam_role.EKSlabs.name
+  role       = aws_iam_role.EKSLab2.name
 }

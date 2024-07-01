@@ -1,4 +1,4 @@
-#######modules/eks/variables.tf
+#### eks/variables.tf
 
 variable "aws_public_subnet" {}
 

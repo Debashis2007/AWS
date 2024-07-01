@@ -1,4 +1,4 @@
-####### modules/vpc/variables.tf
+####### vpc/variables.tf
 
 variable "vpc_cidr" {}
 variable "access_ip" {}
